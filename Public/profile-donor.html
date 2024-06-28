@@ -1,0 +1,239 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>DONOR-PROFILE</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-9ndCyUaIbzAi2FUVXJi0CjmCapSmO7SnpJef0486qhLnuZ2cdeRhO02iuK6FUUVM" crossorigin="anonymous">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.1/jquery.min.js"></script>
+   <script>
+        //============FUNCTION TO UPLOAD PIC=============================
+        function doPrev(refFile,prevImg)
+          {
+              const [file] = refFile.files
+              if (file) {
+                prevImg.src = URL.createObjectURL(file)
+              }
+          }
+          //=========================================================
+
+$(document).ready(function(){
+
+        //=====================================================
+        function setActiveUser(){
+            //alert();
+            if(localStorage.getItem("activeEmail")==undefined)
+            {
+                location.href="index.html";
+                return;
+            }
+            var au=localStorage.getItem("activeEmail");
+              //alert(au);
+             //$("#spanWelcome").html(au);
+
+            $("#txtEmail").val(au).prop("readonly",true);
+          
+          }
+          setActiveUser();
+
+//===============SEARCH BUTTON====================
+    $("#searchbutton").click(dosearch);
+      function dosearch()
+      {
+        var email=$("#txtEmail").val();
+        var obj={
+                    type:"get",
+                    url:"/get-json-record",
+                    data:{
+                    Email:email
+                    }
+                }
+
+            $.ajax(obj).done(function(respJSONKuch)
+            {            
+                var av=respJSONKuch[0].ahours.split(" to ");
+                var avr=av[0];
+                var avf=av[1];
+                //alert(avr);
+                //alert(avf);
+                $("#time1").val(avr);
+                $("#time2").val(avf);
+            
+                //alert(JSON.stringify(respJSONKuch));
+                //$("#res").html(respKuch);
+                $("#txtName").val(respJSONKuch[0].name);
+                $("#txtMobile").val(respJSONKuch[0].contact);
+                $("#imgPrev").prop("src","uploads/"+respJSONKuch[0].filename);
+                $("#txtAddress").val(respJSONKuch[0].address);
+                $("#txtCity").val(respJSONKuch[0].city);
+                $("#txtType").val(respJSONKuch[0].id)
+                $("#pPic").val(respJSONKuch[0].filename);
+                
+
+            }).fail(function(errKuch){
+                //alert(errKuch)
+                $("#res").html(respKuch);
+            })
+          }
+//==========================================================================================
+          //============SAVE BUTTON==================
+          //  $("#buttonSave").click(function(){
+          //  
+          //      var email=$("#txtEmail").val();
+          //      var name=$("#txtName").val();
+          //      var mob=$("#txtMobile").val();
+          //      var address=$("#txtAddress").val();
+          //      var city=$("#txtCity").val();
+          //      var itype=$("#txtType").val();
+          //      var t1=$("#time1").val();
+          //      var t2=$("#time2").val();
+          //      var obj={
+          //      type:"get",
+          //      url:"/save-donor-profile",
+          //      data:{
+          //        emailid:email,
+          //        name:name,
+          //        mob:mob,
+          //        address:address,
+          //        city:city,
+          //        id:itype,
+          //        ahours:t1+" to "+t2 
+          //      }
+          //  }
+//
+          //  $.ajax(obj).done(function(respKuch){
+          //      //alert("MAI DONE HU");
+          //      // $("#respsave").html(respkuch);
+          //      $("#respsave").html(respKuch);
+          //  }).fail(function(err){
+          //      //alert("MAI FAIL HU");
+          //      //$("#respsave").html(err);
+          //      alert(err);
+          //  })
+//
+          //  })
+           //==========LOGOUT-FUNCTIONS========================================
+        //==========LOGOUT-FUNCTIONS========================================
+        //window.history.forward();
+      //==========LOGOUT========================================
+      $("#logout").click(function()
+      {
+            localStorage.removeItem("activeEmail");
+            location.href="index.html";
+            //window.history.forward();
+           
+      })
+      
+})
+      </script>
+
+
+</head>
+  <body class="bg-warning">
+        <nav class="navbar bg-body-tertiary ">
+            <div class="container-fluid">
+            
+                <a class="navbar-brand" href="#"><span class="text-warning h2">Share</span><span class="h3">Cure</span></a>
+                <form class="d-flex" role="search" method="post" enctype="multipart/form-data">
+                    <button class="btn btn-warning me-5" type="button" data-bs-target="#login" id="logout" data-bs-toggle="modal">Logout</button>
+                </form>
+            </div>
+        </nav>
+   
+
+    <div class="section mt-5 pt-2 pb-2 ">
+        <div class="container border border-warning border-3 px-5 py-2 pb-2 bg-white">
+            <div class="text-center">
+                <h2>Profile Donor Form</h2>
+            </div>
+            <div class="row justify-content-center my-5">
+                <div class=" col-lg-12">
+                    <form method="post" enctype="multipart/form-data">
+
+                    <div class="row py-2">
+                        <div class="col-md-6">
+                            <label for="email" class="form-label">Email Address:</label>
+                            <input type="email" class="form-control" id="txtEmail" name="txtEmail" placeholder="abc@example.com">
+                        </div>
+                        <div class="col-md-1">
+                            <label for=""></label>
+                            <input class="btn btn-warning me-5" type="button" value="Search" id="searchbutton"></input>
+                        </div>   
+                    </div>
+
+                    <div class="row py-2">
+                        <div class="col-md-6">
+                            <label for="name" class="form-label">Name:</label>
+                            <input type="text" class="form-control" id="txtName" name="txtName">
+                        </div>    
+                        <div class="col-md-6">
+                            <label for="Mobile" class="form-label">Mobile:</label>
+                            <input type="text" class="form-control" id="txtMobile" name="txtMobile" placeholder="99887-XXXXX">
+                        </div>
+                    </div>
+                    
+                    <div class="row py-2">
+                        <div class="col-md-8">
+                            <label for="Address" class="form-label">Address:</label>
+                            <input type="text" class="form-control" id="txtAddress" name="txtAddress">
+                        </div> 
+                        <div class="col-md-4">
+                            <label for="txtCity" class="form-label">City:</label>
+                            <input type="text" class="form-control" id="txtCity" name="txtCity">
+                        </div>  
+                    </div>
+
+                    <div class="row  py-2">
+                        <div class="col-md-6">
+                                <label for="idproof">ID Proof:</label>
+                                <select class="form-select col-md-3" aria-label="multiple select example" id="txtType" name="txtType">
+                                    <option selected>Select</option>
+                                    <option value="Adhaar Card">Adhaar Card</option>
+                                    <option value="Passport">Passport</option>
+                                    <option value="PanCard">PanCard</option>
+                                </select>
+                        </div>
+
+                        <div class="col-md-4">
+                            <div class="form-outline flex-fill mb-0">
+                                <label class="form-label" for="form3Example4c">Upload Picture:</label>
+                                <input type="file" name="pPic" id="pPic" onchange="doPrev(this,imgPrev)" accept="image/*" class="form-control" />   
+                            </div>
+                        </div>
+
+                        <div class="col-md-2">
+                            <img src="Pics/user.png" name="imgPrev" id="imgPrev" alt="" width="100" height="100">
+                        </div>
+                    </div>
+
+                    <div class="row py-2">
+                        <div class="col-md-2 form-label">
+                            <label for="availablity1">Available From:</label>
+                            <input type="text" class="form-control" id="time1" name="time1">
+                        </div>
+                        <div class="col-md-2 form-label">
+                            <label for="availablity2">to:</label>
+                            <input type="text" class="form-control" id="time2" name="time2">
+                        </div>
+                    </div>
+                        
+                    <div class="row">
+                        <button type="submit" class="btn btn-outline-warning offset-5 col-md-1 me-1" formaction="save-donor-profile">Save</button>
+                        <!-- <button class="btn btn-outline-warning offset-5 col-md-1 me-1" type="button" id="buttonSave" value="Save"> -->                        
+                        <button class="btn btn-outline-warning col-md-1 " type="submit" formaction="update-donor-profile">Update</button>
+                    </div>
+                    <span class="row text-center offset-5" id="respsave"></span>
+                    </form>
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+
+
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js" integrity="sha384-geWF76RCwLtnZ8qwWowPQNguL3RmwHVBC9FhGdlKrxdiJJigb/j/68SIy3Te4Bkz" crossorigin="anonymous"></script>
+  </body>
+</html>

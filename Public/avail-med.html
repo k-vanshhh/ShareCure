@@ -1,0 +1,163 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>DONOR-PROFILE</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-9ndCyUaIbzAi2FUVXJi0CjmCapSmO7SnpJef0486qhLnuZ2cdeRhO02iuK6FUUVM" crossorigin="anonymous">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.1/jquery.min.js"></script>
+    <script>
+
+          //=============PAGE RELOAD========================================
+      function reloadPage(){
+        //alert();
+         location.href="avail-med.html";
+      }
+
+        //============FUNCTION TO UPLOAD PIC=============================
+        function doPrev(refFile,prevImg)
+          {
+              const [file] = refFile.files
+              if (file) {
+                prevImg.src = URL.createObjectURL(file)
+              }
+          }
+          $(document).ready(function(){
+
+
+      //==========LOGOUT========================================
+      $("#logout").click(function()
+      {
+            localStorage.removeItem("activeEmail");
+            location.href="index.html";
+      })
+
+        //=============SET USERS========================================
+        function setActiveUser(){
+            //alert();
+            if(localStorage.getItem("activeEmail")==undefined)
+            {
+                location.href="index.html";
+                return;
+            }
+            var au=localStorage.getItem("activeEmail");
+              //alert(au);
+             //$("#spanWelcome").html(au);
+
+            $("#txtEmail").val(au).prop("readonly",true);
+          
+          }
+          setActiveUser();
+          //=====================================================================================
+           
+    $("#buttonSave").click(function(){
+                var email=$("#txtEmail").val();
+                var med=$("#txtMed").val();
+                var expdate=$("#txtExp").val();
+                var qty=$("#txtQty").val();
+                var itype=$("#txtType").val();
+
+                var obj={
+                type:"get",
+                url:"/save-available-medicines",
+                data:{
+                  email:email,
+                  med:med,
+                  expdate:expdate,
+                  qty:qty,
+                  packing:itype,
+                }
+                }
+                
+                $.ajax(obj).done(function(respKuch){
+                $("#buttonSave").attr("disabled",true);    
+                //alert("MAI DONE HU");
+                $("#resp").html(respKuch);
+                }).fail(function(err){
+                //alert("MAI FAIL HU");
+                $("#resp").html(respKuch);
+                })
+
+    })
+
+});
+          //=========================================================
+      </script>
+
+
+</head>
+  <body class="bg-warning">
+        <nav class="navbar bg-body-tertiary ">
+            <div class="container-fluid">
+            
+                <a class="navbar-brand" href="#"><span class="text-warning h2">Share</span><span class="h3">Cure</span></a>
+                <form class="d-flex" role="search" method="post" enctype="multipart/form-data">
+                    <input class="btn btn-warning me-5" type="button" data-bs-target="#login" id="logout" data-bs-toggle="modal" value="Logout">
+                </form>
+            </div>
+        </nav>
+   
+
+    <div class="section mt-5 pt-2 pb-2 ">
+        <div class="container border border-warning border-3 px-5 py-2 pb-2 bg-white">
+            <div class="text-center">
+                <h2>Donate Medicines</h2>
+            </div>
+            <div class="row justify-content-center my-5">
+                <div class=" col-lg-12">
+                    <form>
+
+                    <div class="row py-2">
+                        <div class="col-md-6">
+                            <label for="email" class="form-label">Email Address:</label>
+                            <input type="email" class="form-control" id="txtEmail" placeholder="abc@example.com">
+                        </div> 
+                    </div>
+
+                    <div class="row py-2">
+                        <div class="col-md-6">
+                            <label for="medname" class="form-label">Med Name:</label>
+                            <input type="text" class="form-control" id="txtMed" placeholder="abc">
+                        </div>    
+                        <div class="col-md-6">
+                            <label for="expdate" class="form-label">Expiry Date:</label>
+                            <input type="date" class="form-control" id="txtExp">
+                        </div>
+                    </div>
+                    
+                    <div class="row py-2">
+                        <div class="col-md-8">
+                            <label for="Address" class="form-label">Packing:</label>
+                            <select class="form-select col-md-3" aria-label="multiple select example" id="txtType" name="txttype">
+                                <option selected>Select</option>
+                                <option value="Bottle">Bottle</option>
+                                <option value="Tablets">Tablets</option>
+                                <option value="Capsule">Capsule</option>
+                                <option value="Blister Packets">Blister Packets</option>
+                                <option value="Syringes">Syringes</option>
+                            </select>
+                        </div> 
+                        <div class="col-md-4">
+                            <label for="txtCity" class="form-label">Qauntity:</label>
+                            <input type="text" class="form-control" id="txtQty">
+                        </div>  
+                    </div>
+
+
+                        
+                    <div class="row">
+                        <button class="btn btn-outline-warning border border-3 border-warning offset-4  col-md-2 me-1 mt-5" type="button" id="buttonSave">Add Med</button>
+                        <input type="button" id="addmore" class="btn btn-outline-warning border border-3 border-warning  col-md-2 me-1 mt-5" onclick="reloadPage()" value="Add More" ></input>
+                        <span id="resp" class="form-text col-md-2 me-1 mt-5">*</span>
+                    </div>
+                    <div class="row text-center"></div>
+                    </form>
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js" integrity="sha384-geWF76RCwLtnZ8qwWowPQNguL3RmwHVBC9FhGdlKrxdiJJigb/j/68SIy3Te4Bkz" crossorigin="anonymous"></script>
+  </body>
+</html>
